@@ -4,7 +4,9 @@ with open('2024/Day1/Day1Input.txt', 'r') as f:
     puzzle_input = f.read()
 
 
-def part1(puzzzle_input):
+from collections import Counter
+
+def solve_puzzle(puzzzle_input):
     lines = puzzle_input.split('\n')
     left = []
     right = []
@@ -15,43 +17,15 @@ def part1(puzzzle_input):
     left_sorted = sorted(left)
     right_sorted = sorted(right)
 
-    result = [abs(a - b) for a, b in zip(left_sorted, right_sorted)]
-    x = 1
+    counts = Counter(right_sorted)
+
+    part1 = 0
+    part2 = 0
+    for i in range(len(left_sorted)):
+        part1 += abs(left_sorted[i] - right_sorted[i])
+        part2 += left_sorted[i] * counts[left_sorted[i]]
 
 
-    return sum(result)
+    return part1,part2,
 
-print(part1(puzzle_input))
-
-
-def part2(puzzle_input):
-    lines = puzzle_input.split('\n')
-    left_dict = {}
-    left_count= {}
-    left= []
-    right = []
-    for line in lines:
-        a, b = line.split()
-        left_dict[int(a)] = 0
-        left_count[int(a)] = 0
-        right.append(int(b))
-        left.append(int(a))
-    
-    keys = left_dict.keys()
-    for i in range(len(right)):
-        if right[i] in keys:
-            left_dict[right[i]] += 1
-        if left[i] in keys:
-            left_count[left[i]] += 1
-
-    result = 0        
-
-    for key,val in left_dict.items():
-        result += key * val * left_count[key]
-    x = 1
-
-
-    return result
-
-print(part2(puzzle_input))
-    
+print(solve_puzzle(puzzle_input))
