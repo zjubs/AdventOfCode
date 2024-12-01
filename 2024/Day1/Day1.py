@@ -6,7 +6,7 @@ with open('2024/Day1/Day1Input.txt', 'r') as f:
 
 from collections import Counter
 
-def solve_puzzle(puzzzle_input):
+def solve_puzzle(puzzle_input):
     lines = puzzle_input.split('\n')
     left = []
     right = []
