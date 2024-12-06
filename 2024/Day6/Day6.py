@@ -1,5 +1,3 @@
-
-
 with open('2024/Day6/Day6Input.txt', 'r') as f:
     #lines = f.readlines()
     lines = f.read().split('\n')
@@ -29,69 +27,24 @@ def add_tuple(tuple1,tuple2):
     return tuple(a + b for a, b in zip(tuple1, tuple2))
 
 
-
-pos = start
-dir = grid[start]
-next_shape = ''
-visited = []
-while next_shape != '?':
-    if pos not in visited:
-            visited.append(pos)
-    next = add_tuple(pos,dir_map[dir])
-    next_shape = grid.get(next,'?')
-
-    if next_shape == '#':
-        dir = dir_change[dir]
-    else:
-        #next_shape == '.':
-        pos = next
-
-
-
-print(len(visited))
-
-
-def is_loop(gridx):
-    pos = start
-    dir = gridx[start]
+def walk(G,part2_ind):
+    pos,dir = start, G[start]
     next_shape = ''
-    visitedx = set()
-    while next_shape != '?':
-        if (pos,dir) in visitedx:
-            return True
-        visitedx.add((pos,dir))
-        
+    seen = set()
+    while next_shape != '?' and (pos,dir) not in seen:
+        seen |= {(pos,dir)}
         next = add_tuple(pos,dir_map[dir])
-        next_shape = gridx.get(next,'?')
-
+        next_shape = G.get(next,'?')
         if next_shape == '#':
             dir = dir_change[dir]
         else:
-            #next_shape == '.':
             pos = next
-    return False
+    if part2_ind:
+        return (pos,dir) in seen
+    else:
+        return {pos for pos,_ in seen}
 
-
-#search on visited only excluding start
-import copy
-
-potential = visited[1:]
-part2 = 0
-counter = 0
-for obj in potential:
-    print(counter)
-    counter += 1
-    grid2 = copy.deepcopy(grid)
-    grid2[obj] = '#'
-    if is_loop(grid2):
-        print(obj)
-        part2 += 1
-
-print(part2)
-
-x = 1
-
-
-
-
-    
+path = walk(grid, False)
+part1 = print(len(path))
+path.remove(start)
+part2 = print(sum(walk(grid|{o:'#'},True) for o in path))
