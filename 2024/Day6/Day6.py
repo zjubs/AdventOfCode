@@ -55,11 +55,11 @@ def is_loop(gridx):
     pos = start
     dir = gridx[start]
     next_shape = ''
-    visitedx = []
+    visitedx = set()
     while next_shape != '?':
         if (pos,dir) in visitedx:
             return True
-        visitedx.append((pos,dir))
+        visitedx.add((pos,dir))
         
         next = add_tuple(pos,dir_map[dir])
         next_shape = gridx.get(next,'?')
