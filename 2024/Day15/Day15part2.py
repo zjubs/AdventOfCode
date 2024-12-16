@@ -11,7 +11,6 @@ class Box:
      # Implementing __hash__ and __eq__ to make Box instances hashable
     def __hash__(self):
         return hash(id(self))
-        #return hash(self.pos)  # Use the position as the hash
 
     def __eq__(self, other):
         return id(self) == id(other)
