@@ -41,7 +41,7 @@ class Box:
     def push(self,boxes: set ,grid: dict,dir: str):
         # use try push to check if can push boxes and get depndent boxes
         # then move each box
-        can_push,push_boxes = self.try_push(boxes,grid,dir)
+        can_push,push_boxes = self.try_push(boxes -{self},grid,dir)
 
         if can_push:
             push_boxes.add(self)
@@ -51,7 +51,7 @@ class Box:
         else:
             return False
     
-    def try_push(self,boxes: set ,grid: dict,dir: str):
+    def try_push(self,other_boxes: set ,grid: dict,dir: str):
         # check if can push a box and get all dependent boxes
         can_push = True
         new_pos = self.potential_move(dir)
@@ -65,7 +65,7 @@ class Box:
             can_push = False
         elif boxes_in_way:
             for box in boxes_in_way:
-                possible,child_boxes = box.try_push(other_boxes,grid,dir)
+                possible,child_boxes = box.try_push(other_boxes - {self},grid,dir)
                 all_child_boxes = all_child_boxes | child_boxes
                 if not possible:
                     can_push = False
