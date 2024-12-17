@@ -1,7 +1,8 @@
 
-with open('2024/Day16/Day16Sample.txt', 'r') as f:
+with open('2024/Day16/Day16Input.txt', 'r') as f:
     puzzle = f.readlines()
 
+from copy import deepcopy
 # prep grid
 grid = {}
 for i,line in enumerate(puzzle):
@@ -20,69 +21,65 @@ for i,line in enumerate(puzzle):
 import heapq
 
 def dijkstra(grid, start, goals):
-    """
-    grid: 2D list where 0 represents a free cell and 1 represents an obstacle.
-    start: Tuple (x, y) representing the start position.
-    goal: Tuple (x, y) representing the goal position.
-    """
+
     def get_neighbours(node):
         neighbours = []
+        opposite = {
+            '^': 'v',
+            '>': '<',
+            '<': '>',
+            'v': '^'}
+
         directions = {
             '^': (-1,0),
             '>': (0,1),
             '<': (0,-1),
             'v': (1,0)}
         for key,value in directions.items():
-            nx, ny = node[0] + value[0], node[1] + value[1]
-            if grid.get((nx,ny),'?') =='.':
-                neighbours.append((nx, ny,key))
+            if key != opposite[node[2]]:
+                nx, ny = node[0] + value[0], node[1] + value[1]
+                if grid.get((nx,ny),'?') =='.':
+                    neighbours.append((nx, ny,key))
         return neighbours
 
-    #open_set = PriorityQueue()
     open_set = []
-    heapq.heappush(open_set,(0, start))  # (priority, node)
-    came_from = {}  # To reconstruct the path later
+    heapq.heappush(open_set,(0, start,[(start[0],start[1])]))  # (priority, node,path)
     g_score = {start: 0}
+    valid_paths = []
 
     while open_set:
-        _, current = heapq.heappop(open_set)
-
-        if current in goals:
-            # Reconstruct the path
-            # this is nonesense
-            #nodes_to_check = PriorityQueue()
-            nodes_to_check = []
-            heapq.heappush(nodes_to_check,current)
-            visited = {start}
-            path = {(start[0],start[1])}
-            while nodes_to_check:
-                x = heapq.heappop(nodes_to_check)
-                path.add((x[0],x[1]))
-                visited.add(x)
-                for node in came_from.get(x,None):
-                    if node not in visited:
-                        heapq.heappush(nodes_to_check,node)
-                    
-            print(g_score[current])
-            return path 
+        score, current,path = heapq.heappop(open_set)
+            
+        if current in goals: # finish cond
+                
+            valid_paths.append((score,path))
+            print(score)
 
         for neighbour in get_neighbours(current):
             dir_change = neighbour[2] != current[2]
-            tentative_g_score = g_score[current] + 1 + (int(dir_change) * 1000)
+            tentative_g_score = score + 1 + (int(dir_change) * 1000)
 
-            if neighbour not in g_score or tentative_g_score < g_score[neighbour]:
-                #came_from[neighbour] = came_from.get(neighbour,[]).append(current)
-                came_from.setdefault(neighbour, []).append(current)
+            if neighbour not in g_score or tentative_g_score <= g_score[neighbour]:
                 g_score[neighbour] = tentative_g_score
-                heapq.heappush(open_set,(tentative_g_score, neighbour))
+                updated_path = deepcopy(path)
+                updated_path.append((neighbour[0], neighbour[1]))
 
-    return None  # No path found
+                heapq.heappush(open_set,(tentative_g_score, neighbour,updated_path))
 
-path = dijkstra(grid, start, ends)
-if path:
-    print("Path found:", path)
-else:
-    print("No path found.")
+    return valid_paths  # No path found
+
+paths = dijkstra(grid, start, ends)
+
+
+min_score = min([x for x,_ in paths])
+print(f'part1:{min_score}')
+seats = set()
+for score,path in paths:
+    if score == min_score:
+        seats |= {*path}
+
+print(f'part1:{len(seats)}')
+
 
 
 #debug path
@@ -91,13 +88,13 @@ for i,line in enumerate(puzzle):
     curr_line = ''
     for j,chr in enumerate(line):
         
-        if (i,j) in path:
+        if (i,j) in seats:
             curr_line = f'{curr_line}O'
         else:
             curr_line = f'{curr_line}{grid[i,j]}'
     print(curr_line, end='\n')
 
-x = 1
+
 
 
 
