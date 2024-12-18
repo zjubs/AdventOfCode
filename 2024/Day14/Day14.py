@@ -68,13 +68,13 @@ for t in range(10000):
         robots_curr.append((x2,y2))
 
         # Create an empty grid (0 = empty, 1 = marked)
-        grid = np.zeros((rows, cols), dtype=int)
+        grid = np.zeros((cols, rows), dtype=int)
 
     # Mark the positions
     ## these are occurences of patterns in grid so we investigate these
     if (t+1) % 103 == 66 or (t+1) % 101 == 12:
         for r, c in robots_curr:
-            grid[r][c] = '1'
+            grid[c][r] = '1'
 
         # Print the grid row by row
         plt.figure(figsize=(6, 6))
