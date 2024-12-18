@@ -26,7 +26,7 @@ def get_operand_val(operand):
             return c
 
 
-def apply_inst(opcode,operand,combo,i):
+def apply_inst(opcode,operand,combo,i,a,b,c):
     match opcode:
         case 0: #adv
             a = a //(2**combo)
@@ -46,14 +46,14 @@ def apply_inst(opcode,operand,combo,i):
             b = a //(2**combo)
         case 7: #bxl
             c = a //(2**combo)
-    return i
+    return i,a,b,c
 
 output = []
 i = 0 # need to use this
 while i < len(opcodes):
     opcode, operand = opcodes[i],operands[i]
     combo = get_operand_val(operand)
-    i = apply_inst(opcode,operand,combo,i)
+    i,a,b,c = apply_inst(opcode,operand,combo,i,a,b,c)
 
     i += 1
 
