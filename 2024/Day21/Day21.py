@@ -4,9 +4,10 @@ from itertools import permutations
 from functools import cache
 
 @cache
-def all_paths(start, end,invalid):
-    # invalid should be the ref for the empty cell in the control panel being used
-
+def all_paths(start, end, invalid):
+    """
+    finds all paths between two coordinates in a grid avoiding passing through invalid coordinate
+    """
     x1, y1 = start
     x2, y2 = end
     
@@ -18,7 +19,6 @@ def all_paths(start, end,invalid):
              '>': (0,1),
              'v': (1,0)}
     
-
     # Determine step directions
     u = '^' if dx < 0 else 'v'
     r = '<' if dy < 0 else '>'
@@ -45,36 +45,37 @@ def all_paths(start, end,invalid):
 
     return valid_paths
 
-
-grid_numeric_rev ={
-    (0,0): '7',
-    (0,1): '8',
-    (0,2): '9',
-    (1,0): '4',
-    (1,1): '5',
-    (1,2): '6',
-    (2,0): '1',
-    (2,1): '2', 
-    (2,2): '3',
-    (3,1): '0', 
-    (3,2): 'A',  
+grid_numeric ={
+    '7': (0,0),
+    '8': (0,1),
+    '9': (0,2),
+    '4': (1,0),
+    '5': (1,1),
+    '6': (1,2),
+    '1': (2,0),
+    '2': (2,1), 
+    '3': (2,2),
+    '0': (3,1), 
+    'A': (3,2)  
 }
-grid_numeric = {val: key for key,val in grid_numeric_rev.items()}
 grid_numeric_invalid = (3,0)
 
-grid_direction_rev ={
-    (0,1): '^',
-    (0,2): 'A',
-    (1,0): '<',
-    (1,1): 'v',
-    (1,2): '>'
+grid_direction ={
+    '^': (0,1),
+    'A': (0,2),
+    '<': (1,0),
+    'v': (1,1),
+    '>': (1,2)
 }
 grid_direction_invalid = (0,0)
-grid_direction  = {val: key for key,val in grid_direction_rev.items()}
-
 
 @cache
 def solve_paths(paths, level,nlevels):
+    """
+    Count the minimum number of button presses for a code on the directional control for nlevels of robots
+    This finds all paths between buttons to be pressed in the code and recurses for all required levels
+    At the final recusion level required the minimum number of buttons required is calculated
+    """
     curr_iter_buttonslist =[]
     for path in paths:
         path_buttons = 0
@@ -96,7 +97,15 @@ def solve_paths(paths, level,nlevels):
 
 
 def process_code(code,nlevels):
-    buttons = 0 
+    """
+    Count the minimum number of button presses for a code on the numerical control for nlevels of robots
+    This finds all paths between buttons to be pressed in the code
+    solve_paths then returns the minimum number of button pressed for each path for the 
+    number of levels of robots
+    """
+    buttons = 0
+    # since start pointing at 'A' include move from 'A' to first element of code
+    code =  'A' + code
     for s,e in zip(code, code[1:]):
         
         paths = all_paths(grid_numeric[s], grid_numeric[e],grid_numeric_invalid)
@@ -113,7 +122,6 @@ part1 = 0
 part2 = 0 
 for code in codes:
     val = int(code[:3])
-    code =  'A' + code
     part1 += val * process_code(code,2)
     part2 += val * process_code(code,25)
 print(f'Part1: {part1}')
