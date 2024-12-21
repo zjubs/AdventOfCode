@@ -109,6 +109,7 @@ def process_code(code,nlevels):
     for s,e in zip(code, code[1:]):
         
         paths = all_paths(grid_numeric[s], grid_numeric[e],grid_numeric_invalid)
+        # directional robot will always start and finish on 'A'
         updated_paths = {('A',) + t + ('A',) for t in paths}
 
         buttons += solve_paths(frozenset(updated_paths), 1,nlevels)
