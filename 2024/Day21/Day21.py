@@ -78,42 +78,53 @@ grid_direction  = {val: key for key,val in grid_direction_rev.items()}
 
 # remember to start at A
 code =  'A' + '029A'
-buttons = 0 
-for s,e in zip(code, code[1:]):
-    buttons_this_step = 100
-    paths = all_paths(grid_numeric[s], grid_numeric[e],grid_numeric_invalid)
-    updated_paths = {('A',) + t + ('A',) for t in paths}
 
-    level1buttonslist =[]
-    for path in updated_paths:
-        level1_buttons = 0
-        for s1, e1, in zip(path,path[1:]):
-                paths_1 = all_paths(grid_direction[s1], grid_direction[e1],grid_direction_invalid)
-                updated_paths_1 = {('A',) + t + ('A',) for t in paths_1}
+def process_code(code):
+    buttons = 0 
+    for s,e in zip(code, code[1:]):
+        buttons_this_step = 100
+        paths = all_paths(grid_numeric[s], grid_numeric[e],grid_numeric_invalid)
+        updated_paths = {('A',) + t + ('A',) for t in paths}
 
-                
-                level2buttonslist =[]
-                for path_1 in updated_paths_1:
-                    level2_buttons = 0
-                    for s2, e2, in zip(path_1,path_1[1:]):
-                            paths_2 = all_paths(grid_direction[s2], grid_direction[e2],grid_direction_invalid)
-                            updated_paths_2 = {t + ('A',) for t in paths_2}
-                            min_buttons = min([len(t) for t in updated_paths_2])
+        level1buttonslist =[]
+        for path in updated_paths:
+            level1_buttons = 0
+            for s1, e1, in zip(path,path[1:]):
+                    paths_1 = all_paths(grid_direction[s1], grid_direction[e1],grid_direction_invalid)
+                    updated_paths_1 = {('A',) + t + ('A',) for t in paths_1}
 
-                            level2_buttons += min_buttons
-                    level2buttonslist.append(level2_buttons)
+                    
+                    level2buttonslist =[]
+                    for path_1 in updated_paths_1:
+                        level2_buttons = 0
+                        for s2, e2, in zip(path_1,path_1[1:]):
+                                paths_2 = all_paths(grid_direction[s2], grid_direction[e2],grid_direction_invalid)
+                                updated_paths_2 = {t + ('A',) for t in paths_2}
+                                min_buttons = min([len(t) for t in updated_paths_2])
 
-                min_level1_buttons = min(level2buttonslist)
-                level1_buttons += min_level1_buttons
-        level1buttonslist.append(level1_buttons)
-    buttons += min(level1buttonslist)
+                                level2_buttons += min_buttons
+                        level2buttonslist.append(level2_buttons)
 
+                    min_level1_buttons = min(level2buttonslist)
+                    level1_buttons += min_level1_buttons
+            level1buttonslist.append(level1_buttons)
+        buttons += min(level1buttonslist)
+    return buttons
+
+print(process_code(code))
 
 x = 1                    
 
 
-
-
+with open('2024/Day21/Day21Input.txt', 'r') as f:
+    codes = f.read().split('\n')
+part1 = 0 
+for code in codes:
+    val = int(code[:3])
+    code =  'A' + code
+    part1 += val * process_code(code)
+print(part1)
+x = 1
 
 #find min for each path
 # sum for each s2,e2
