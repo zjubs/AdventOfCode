@@ -36,3 +36,45 @@ x=1
 required_keys = sorted([key for key in outputs.keys() if key.startswith("z")],reverse=True)
 res = int(''.join([str(outputs[key]) for key in required_keys]),2)
 print(f'Part1: {res}')
+
+# part2 
+
+issues = set()
+for row in wires_in.split('\n'):
+
+    in1,op,in2,_,out1 = row.split()
+
+    if out1.startswith('z') and op in('AND','OR')and out1 != 'z45':
+        print(out1)
+        issues.add(out1)
+
+    if op == 'XOR' and not out1.startswith('z') and not (in1.startswith('y') or in1.startswith('x')) and not (in1.startswith('y') or in1.startswith('x')):
+        print(out1)
+        issues.add(out1)
+
+    if op == 'OR' and (in1.startswith('y') or in1.startswith('x') or in1.startswith('y') or in1.startswith('x')):
+        print(out1)
+        issues.add(out1)
+
+    if op == 'OR':
+        for row2 in wires_in.split('\n'):
+            in1_sub,op_sub,in2_sub,_,out1_sub = row2.split()
+            if out1_sub in (in1, in2) and op_sub != 'AND':
+                print(out1_sub)
+                #print(out1)
+                issues.add(out1)
+    
+    if op == 'XOR':
+        for row2 in wires_in.split('\n'):
+            in1_sub,op_sub,in2_sub,_,out1_sub = row2.split()
+            if out1_sub in (in1, in2) and op_sub == 'AND':
+                print(out1_sub)
+                #print(out1)
+                issues.add(out1_sub)
+
+
+
+
+
+# The above gave some additional issues, which are related to other swapped wires
+# but from that could infer the correct answer
