@@ -2,10 +2,11 @@
 with open('2025/Day03/input.txt', 'r') as f:
     puzzle_input = f.read()
 
-result = 0 
+
 lines = puzzle_input.split('\n')
 n_batteries = [2,12] #part1,part2
 for n in n_batteries:
+    result = 0 
     for line in lines:
         line_max = ''
         start = 0
