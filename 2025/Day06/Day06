@@ -1,0 +1,56 @@
+
+import math
+import re
+
+puzzle_input =[]
+with open('2025/Day06/input.txt', 'r') as f:
+    for line in f:
+        parts = line.split()
+        if parts:
+            puzzle_input.append(parts)
+
+
+signs = puzzle_input.pop(4)
+
+result = 0
+for i in range(len(puzzle_input[0])):
+    col_vals = []
+    for j in range(len(puzzle_input)):
+        col_vals.append(int(puzzle_input[j][i]))
+    if signs[i] =="+":
+        result += sum(col_vals)
+    else:
+        result += math.prod(col_vals)
+
+print(result)
+
+with open('2025/Day06/input.txt', 'r') as f:
+    puzzle_input = f.read().split('\n')
+
+signs = puzzle_input.pop(4)
+
+widths = [len(m) for m in re.findall(r" +", signs)]
+widths[-1] +=1
+widths.reverse()
+signs = signs.split()
+signs.reverse()
+result2 =0
+
+pos = 0 # adjustment for each set of numbers
+for w,sign in zip(widths,signs):
+    
+    col_vals = []
+    for i in range(w):
+        num =''
+        for j in range(len(puzzle_input)):
+            num = num + puzzle_input[j][::-1][i+pos]
+            x = 1
+        col_vals.append(int(num))
+    if sign =="+":
+        result2 += sum(col_vals)
+    else:
+        result2 += math.prod(col_vals)
+    pos+=(w+1)
+
+print(result2)
+                   
