@@ -3,6 +3,10 @@ with open('2025/Day03/input.txt', 'r') as f:
     puzzle_input = f.read()
 
 
+
+
+
+
 lines = puzzle_input.split('\n')
 n_batteries = [2,12] #part1,part2
 for n in n_batteries:
@@ -30,3 +34,15 @@ for n in n_batteries:
         result += int(line_max)
 
     print(result)
+
+
+# Much cleaner solution than mine:
+
+def f(s, ans='', pos=-1):
+    l = len(s.strip())-n+1
+    for i in range(n):
+        pos = max(range(pos+1, l+i), key=lambda x: s[x])
+        ans += s[pos]
+    return int(ans)
+
+for n in 2, 12: print(sum(map(f, open('2025/Day03/input.txt'))))

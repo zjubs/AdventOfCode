@@ -53,8 +53,6 @@ def update(x,curr):
         curr.append([start,end])
         
 
-
-
 curr = []
 for r in rs:
     start,end = r.split('-')
@@ -70,9 +68,4 @@ result2 = 0
 for x in curr:
     result2 +=x[1] - x[0] + 1
 print(result2)
-
-
-        
-
-x = 1
 
